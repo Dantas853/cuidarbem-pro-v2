@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CuidarBem Pro – Controle de Cuidados</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --verde: #2d6a4f;
+      --verde-claro: #52b788;
+      --verde-pastel: #d8f3dc;
+      --creme: #fdf6ec;
+      --areia: #f5e6d0;
+      --laranja: #e76f51;
+      --azul: #457b9d;
+      --texto: #253326;
+      --texto-leve: #66766a;
+      --branco: #fff;
+      --sombra: 0 10px 30px rgba(45,106,79,.10);
+      --raio: 18px;
+      --borda: #dfe8e0;
+      --erro: #b42318;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--texto);
+      background: linear-gradient(180deg, #f9f5ef 0%, #fdfaf7 100%);
+      min-height: 100vh;
+    }
+    h1,h2,h3,h4 { margin: 0; }
+    button, input, select, textarea { font-family: inherit; }
+    a { color: inherit; }
+
+    .shell { max-width: 1180px; margin: 0 auto; padding: 22px 18px 60px; }
+    .hidden { display: none !important; }
+    .muted { color: var(--texto-leve); }
+    .small { font-size: .85rem; }
+    .tiny { font-size: .75rem; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .space { justify-content: space-between; align-items: center; }
+
+    .card {
+      background: var(--branco);
+      border-radius: var(--raio);
+      box-shadow: var(--sombra);
+      padding: 22px;
+      margin-bottom: 18px;
+      border: 1px solid rgba(45,106,79,.06);
+    }
+    .card-title {
+      font-family: 'Lora', serif;
+      color: var(--verde);
+      font-size: 1.1rem;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, var(--verde) 0%, #367b59 100%);
+      color: white;
+      border-radius: 26px;
+      padding: 20px 22px;
+      margin-bottom: 20px;
+      box-shadow: 0 15px 30px rgba(45,106,79,.20);
+    }
+    .hero h1 { font-family: 'Lora', serif; font-size: 1.65rem; }
+    .hero .meta { color: #d8f3dc; font-size: .9rem; margin-top: 4px; }
+    .avatar {
+      width: 58px; height: 58px; border-radius: 50%;
+      background: rgba(255,255,255,.16);
+      border: 1px solid rgba(255,255,255,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem;
+      flex-shrink: 0;
+    }
+
+    .tabs {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      background: var(--areia);
+      padding: 8px; border-radius: 999px;
+      width: fit-content; margin-bottom: 20px;
+    }
+    .tab-btn {
+      border: 0; border-radius: 999px; background: transparent;
+      padding: 10px 18px; cursor: pointer; color: var(--texto-leve);
+      font-weight: 600;
+    }
+    .tab-btn.active {
+      background: var(--verde); color: #fff; box-shadow: 0 4px 12px rgba(45,106,79,.24);
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1.2fr .8fr; gap: 18px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+
+    .stat {
+      background: white; border-radius: 18px; box-shadow: var(--sombra);
+      padding: 18px; text-align: center;
+    }
+    .stat strong {
+      display: block; font-family: 'Lora', serif; font-size: 2rem; line-height: 1; color: var(--verde);
+      margin-bottom: 6px;
+    }
+    .stat span { color: var(--texto-leve); font-size: .84rem; }
+
+    .form-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+    .field { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 180px; }
+    .field label { font-size: .74rem; text-transform: uppercase; letter-spacing: .04em; color: var(--texto-leve); font-weight: 700; }
+    input, select, textarea {
+      width: 100%; border: 1.5px solid var(--borda); border-radius: 12px;
+      background: #fffdfa; color: var(--texto); padding: 11px 13px; font-size: .95rem;
+      outline: none;
+    }
+    textarea { min-height: 84px; resize: vertical; }
+    input:focus, select:focus, textarea:focus { border-color: var(--verde-claro); box-shadow: 0 0 0 4px rgba(82,183,136,.12); }
+
+    .btn {
+      border: 0; border-radius: 12px; cursor: pointer; padding: 11px 16px;
+      font-weight: 700; font-size: .92rem; transition: .2s ease;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { background: var(--verde); color: white; }
+    .btn-secondary { background: white; color: var(--verde); border: 1.5px solid var(--verde); }
+    .btn-danger { background: var(--laranja); color: white; }
+    .btn-soft { background: var(--verde-pastel); color: var(--verde); }
+    .btn-sm { padding: 8px 12px; font-size: .82rem; border-radius: 10px; }
+
+    .notice, .alert, .success {
+      border-radius: 14px; padding: 12px 14px; margin-bottom: 14px; font-size: .9rem;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .notice { background: #fff8e7; color: #7a5c00; border: 1px solid #f1d589; }
+    .alert { background: #fff1f3; color: var(--erro); border: 1px solid #f0bec7; }
+    .success { background: #edf9f1; color: #136a35; border: 1px solid #b8e0c3; }
+
+    .list { display: flex; flex-direction: column; gap: 10px; }
+    .item {
+      border-radius: 15px; background: #fffdfa; border: 1px solid #edf1ed; padding: 15px 16px;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .item.done { opacity: .65; }
+    .item.done .item-title { text-decoration: line-through; }
+    .item.urgent { border-left: 4px solid var(--laranja); }
+    .check {
+      width: 22px; height: 22px; border-radius: 7px; border: 2px solid var(--verde-claro); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;
+    }
+    .item.done .check { background: var(--verde-claro); color: white; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border-radius: 999px; font-size: .73rem; font-weight: 700;
+      background: var(--verde-pastel); color: var(--verde);
+    }
+    .pill.orange { background: #fde8e2; color: var(--laranja); }
+    .pill.blue { background: #e5eef5; color: var(--azul); }
+    .pill.gray { background: #eef1ef; color: #5d6c5e; }
+    .item-content { flex: 1; }
+    .item-title { font-weight: 700; margin-bottom: 6px; }
+    .item-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+
+    .med-card {
+      border: 1px solid #e9efea; background: #fffdfa; border-radius: 16px; padding: 16px; display: flex; gap: 14px; margin-bottom: 12px;
+    }
+    .med-icon {
+      width: 46px; height: 46px; border-radius: 12px; background: var(--verde-pastel); display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .dose-wrap { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .dose-pill {
+      border: 0; border-radius: 999px; padding: 8px 12px; cursor: pointer; font-weight: 700;
+      background: var(--verde); color: white; font-size: .8rem;
+    }
+    .dose-pill.taken { background: #b6cab7; text-decoration: line-through; }
+
+    .auth-screen {
+      min-height: 100vh; display: grid; place-items: center; padding: 20px;
+      background: radial-gradient(circle at top left, #edf9f1 0%, #fdf6ec 38%, #fffdfa 100%);
+    }
+    .auth-box {
+      width: min(980px, 100%); background: white; border-radius: 28px; box-shadow: 0 20px 40px rgba(45,106,79,.12);
+      overflow: hidden; display: grid; grid-template-columns: 1fr 1.1fr;
+      border: 1px solid rgba(45,106,79,.08);
+    }
+    .auth-side {
+      background: linear-gradient(135deg, var(--verde) 0%, #2a5f47 100%); color: white; padding: 36px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .auth-side h2 { font-family: 'Lora', serif; font-size: 2rem; margin-bottom: 12px; }
+    .auth-features { display: grid; gap: 14px; margin-top: 20px; }
+    .auth-feature { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); border-radius: 16px; padding: 14px; }
+    .auth-main { padding: 32px; background: #fffdfa; }
+
+    .segmented { display: inline-flex; background: var(--areia); border-radius: 999px; padding: 6px; margin-bottom: 18px; }
+    .segmented button { border: 0; background: transparent; border-radius: 999px; padding: 9px 14px; font-weight: 700; cursor: pointer; color: var(--texto-leve); }
+    .segmented button.active { background: var(--verde); color: white; }
+
+    .log-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f1f4f2; font-size: .9rem; }
+    .log-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--verde-claro); margin-top: 6px; flex-shrink: 0; }
+    .log-dot.med { background: var(--azul); }
+    .log-dot.sys { background: var(--laranja); }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .empty { text-align: center; color: var(--texto-leve); padding: 32px 18px; }
+    .empty .emoji { font-size: 2rem; margin-bottom: 10px; }
+
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,.38);
+      display: none; align-items: center; justify-content: center; padding: 20px; z-index: 80;
+    }
+    .modal {
+      width: min(760px, 100%); background: white; border-radius: 24px; box-shadow: 0 24px 44px rgba(0,0,0,.20); padding: 24px;
+      max-height: 90vh; overflow: auto;
+    }
+
+    .tag-box { display: flex; gap: 10px; flex-wrap: wrap; }
+    .tag-check {
+      border: 1.5px solid var(--borda); border-radius: 999px; padding: 8px 12px; display: inline-flex; align-items: center; gap: 8px;
+      background: white;
+    }
+
+    .footer-space { height: 30px; }
+
+    @media (max-width: 920px) {
+      .auth-box, .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .auth-side { display: none; }
+    }
+    @media (max-width: 640px) {
+      .shell { padding: 16px 12px 60px; }
+      .hero h1 { font-size: 1.35rem; }
+      .tabs { width: 100%; overflow-x: auto; flex-wrap: nowrap; }
+      .stat strong { font-size: 1.7rem; }
+      .auth-main { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-box">
+      <div class="auth-side">
+        <div>
+          <div class="small" style="opacity:.9; margin-bottom:12px;">🌿 CuidarBem Pro</div>
+          <h2>Controle de cuidados com acesso por usuário</h2>
+          <p style="line-height:1.6; color:#def3e1; max-width:420px;">
+            Cadastro, login, grupo compartilhado entre família e cuidadora, histórico em nuvem e exportação em PDF semanal ou mensal.
+          </p>
+          <div class="auth-features">
+            <div class="auth-feature"><strong>👥 Usuários</strong><div class="small" style="margin-top:6px; color:#def3e1;">Cada pessoa entra com sua conta.</div></div>
+            <div class="auth-feature"><strong>🔐 Grupo compartilhado</strong><div class="small" style="margin-top:6px; color:#def3e1;">Convide a cuidadora usando o código do grupo.</div></div>
+            <div class="auth-feature"><strong>📄 PDF filtrado</strong><div class="small" style="margin-top:6px; color:#def3e1;">Exporte histórico por semana ou mês com as classificações desejadas.</div></div>
+          </div>
+        </div>
+        <div class="tiny" style="color:#def3e1; opacity:.9;">Sugestão: publique este HTML no Netlify ou Vercel para abrir no celular.</div>
+      </div>
+
+      <div class="auth-main">
+        <div class="card" style="margin-bottom:16px; background:#f9fdf9; border:1px dashed #c7dbc9; box-shadow:none;">
+          <div class="card-title">⚙️ Configuração do Supabase</div>
+          <div class="form-row">
+            <div class="field"><label>Supabase URL</label><input id="cfg-url" type="text"></div>
+            <div class="field"><label>Anon Key</label><input id="cfg-key" type="text"></div>
+          </div>
+          <div class="row">
+            <button class="btn btn-primary" onclick="saveConfig()">💾 Salvar configuração</button>
+            <button class="btn btn-secondary" onclick="loadDefaultConfig()">↺ Restaurar padrão</button>
+          </div>
+          <div class="tiny muted" style="margin-top:10px;">A chave pública e a URL ficam salvas apenas no navegador do aparelho.</div>
+        </div>
+
+        <div class="segmented">
+          <button id="auth-mode-login" class="active" onclick="switchAuthMode('login')">Entrar</button>
+          <button id="auth-mode-register" onclick="switchAuthMode('register')">Cadastrar</button>
+        </div>
+
+        <div id="auth-feedback"></div>
+
+        <div class="card" style="box-shadow:none; border:1px solid #eef2ee;">
+          <div class="form-row">
+            <div class="field"><label>E-mail</label><input id="auth-email" type="email" placeholder="seuemail@exemplo.com"></div>
+            <div class="field"><label>Senha</label><input id="auth-password" type="password" placeholder="mínimo de 6 caracteres"></div>
+          </div>
+          <div id="register-extra" class="hidden">
+            <div class="form-row">
+              <div class="field"><label>Nome de exibição</label><input id="auth-name" type="text" placeholder="Ex: Anderson"></div>
+              <div class="field"><label>Tipo de perfil</label>
+                <select id="auth-role">
+                  <option value="family">Familiar</option>
+                  <option value="caregiver">Cuidador(a)</option>
+                  <option value="other">Outro</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>Vinculação do grupo</label>
+                <select id="auth-group-mode" onchange="toggleGroupFields()">
+                  <option value="create">Criar novo grupo</option>
+                  <option value="join">Entrar em grupo existente</option>
+                </select>
+              </div>
+              <div class="field" id="field-group-name"><label>Nome do grupo</label><input id="auth-group-name" type="text" placeholder="Ex: Cuidados Dona Maria"></div>
+              <div class="field hidden" id="field-group-code"><label>Código do grupo</label><input id="auth-group-code" type="text" placeholder="Ex: AB12CD"></div>
+            </div>
+          </div>
+
+          <div class="row">
+            <button id="auth-submit-btn" class="btn btn-primary" onclick="handleAuth()">🔐 Entrar</button>
+            <button class="btn btn-secondary" onclick="signOut()">Sair da sessão atual</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="app-screen" class="hidden">
+    <div class="shell">
+      <div class="hero">
+        <div class="row space">
+          <div class="row" style="align-items:center;">
+            <div class="avatar">👵</div>
+            <div>
+              <h1 id="hero-patient-name">Paciente não configurado</h1>
+              <div class="meta" id="hero-patient-meta">Cadastre os dados do paciente para iniciar.</div>
+              <div class="tiny" style="margin-top:8px; color:#dff4e4;">
+                Grupo: <strong id="group-name">—</strong> • Código: <strong id="group-code">—</strong>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:right; min-width:210px;">
+            <div id="clock" style="font-size:1.35rem; font-weight:700;"></div>
+            <div id="today-date" class="small" style="color:#def3e1; margin-top:4px;"></div>
+            <div class="tiny" style="margin-top:10px; color:#def3e1;">Usuário: <strong id="user-label">—</strong></div>
+            <div class="row" style="justify-content:flex-end; margin-top:12px;">
+              <button class="btn btn-soft btn-sm" onclick="openPatientModal()">✏️ Paciente</button>
+              <button class="btn btn-secondary btn-sm" style="background:rgba(255,255,255,.08); color:white; border-color:rgba(255,255,255,.28);" onclick="signOut()">🚪 Sair</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="app-feedback"></div>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showSection('resumo', this)">📋 Resumo</button>
+        <button class="tab-btn" onclick="showSection('tarefas', this)">✅ Tarefas</button>
+        <button class="tab-btn" onclick="showSection('medicamentos', this)">💊 Medicamentos</button>
+        <button class="tab-btn" onclick="showSection('historico', this)">📜 Histórico</button>
+        <button class="tab-btn" onclick="showSection('relatorios', this)">📄 Relatórios PDF</button>
+      </div>
+
+      <section id="section-resumo" class="section active">
+        <div class="grid-4">
+          <div class="stat"><strong id="stat-tasks-done">0</strong><span>Tarefas concluídas</span></div>
+          <div class="stat"><strong id="stat-tasks-pending">0</strong><span>Tarefas pendentes</span></div>
+          <div class="stat"><strong id="stat-doses-done">0</strong><span>Doses tomadas hoje</span></div>
+          <div class="stat"><strong id="stat-doses-pending">0</strong><span>Doses pendentes hoje</span></div>
+        </div>
+
+        <div class="grid-2" style="margin-top:18px;">
+          <div class="card">
+            <div class="card-title">🌤️ Próximas ações</div>
+            <div id="next-actions" class="list"></div>
+          </div>
+          <div>
+            <div class="card">
+              <div class="card-title">👥 Compartilhamento do grupo</div>
+              <div class="notice">ℹ️ Entregue este código para a cuidadora se cadastrar e entrar no mesmo grupo: <strong id="group-code-2">—</strong></div>
+              <div class="small muted">Todos os membros do grupo enxergam os mesmos dados do paciente.</div>
+            </div>
+            <div class="card">
+              <div class="card-title">📝 Últimos registros</div>
+              <div id="last-logs"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="section-tarefas" class="section">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">➕ Nova tarefa</div>
+            <div class="form-row">
+              <div class="field"><label>Descrição</label><input id="task-desc" type="text" placeholder="Ex: Verificar pressão arterial"></div>
+              <div class="field" style="max-width:150px;"><label>Hora</label><input id="task-time" type="time"></div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>Categoria</label>
+                <select id="task-category">
+                  <option value="saude">Saúde</option>
+                  <option value="higiene">Higiene</option>
+                  <option value="alimentacao">Alimentação</option>
+                  <option value="exercicio">Exercício</option>
+                  <option value="consulta">Consulta/Exame</option>
+                  <option value="outro">Outro</option>
+                </select>
+              </div>
+              <div class="field"><label>Prioridade</label>
+                <select id="task-priority">
+                  <option value="normal">Normal</option>
+                  <option value="urgente">Urgente</option>
+                </select>
+              </div>
+              <div class="field"><label>Responsável</label><input id="task-responsible" type="text" placeholder="Ex: Cuidadora Ana"></div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>Observação</label><textarea id="task-notes" placeholder="Informações complementares"></textarea></div>
+            </div>
+            <button class="btn btn-primary" onclick="createTask()">✅ Salvar tarefa</button>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 Tarefas do grupo</div>
+            <div id="task-list" class="list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="section-medicamentos" class="section">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">💊 Novo medicamento</div>
+            <div class="form-row">
+              <div class="field"><label>Nome</label><input id="med-name" type="text" placeholder="Ex: Losartana"></div>
+              <div class="field" style="max-width:160px;"><label>Dosagem</label><input id="med-dose" type="text" placeholder="Ex: 1 comprimido"></div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>Via</label>
+                <select id="med-route">
+                  <option value="Oral">Oral</option>
+                  <option value="Sublingual">Sublingual</option>
+                  <option value="Injetável">Injetável</option>
+                  <option value="Tópica">Tópica</option>
+                  <option value="Inalatória">Inalatória</option>
+                </select>
+              </div>
+              <div class="field"><label>Classificação/uso</label><input id="med-condition" type="text" placeholder="Ex: Pressão arterial"></div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>Horários (separados por vírgula)</label><input id="med-times" type="text" placeholder="Ex: 08:00, 12:00, 20:00"></div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>Observações</label><textarea id="med-notes" placeholder="Ex: tomar após café"></textarea></div>
+            </div>
+            <button class="btn btn-primary" onclick="createMedication()">💾 Salvar medicamento</button>
+          </div>
+          <div class="card">
+            <div class="card-title">🧾 Medicamentos cadastrados</div>
+            <div id="med-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="section-historico" class="section">
+        <div class="card">
+          <div class="row space" style="margin-bottom:16px;">
+            <div class="card-title" style="margin-bottom:0;">📜 Histórico de atividades</div>
+            <button class="btn btn-danger btn-sm" onclick="clearLogs()">🗑️ Limpar histórico</button>
+          </div>
+          <div id="history-list"></div>
+        </div>
+      </section>
+
+      <section id="section-relatorios" class="section">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">📄 Gerar PDF do histórico</div>
+            <div class="notice">ℹ️ O relatório pode ser semanal ou mensal e você escolhe quais classificações entram no PDF.</div>
+            <div class="form-row">
+              <div class="field"><label>Tipo do período</label>
+                <select id="report-period" onchange="toggleReportFields()">
+                  <option value="weekly">Semanal</option>
+                  <option value="monthly">Mensal</option>
+                </select>
+              </div>
+              <div class="field" id="report-week-field"><label>Data de referência da semana</label><input id="report-week-date" type="date"></div>
+              <div class="field hidden" id="report-month-field"><label>Mês de referência</label><input id="report-month" type="month"></div>
+            </div>
+            <div class="field" style="margin-bottom:12px;">
+              <label>Classificações que irão para o PDF</label>
+              <div class="tag-box">
+                <label class="tag-check"><input type="checkbox" id="pdf-patient" checked> Dados do paciente</label>
+                <label class="tag-check"><input type="checkbox" id="pdf-tasks" checked> Tarefas</label>
+                <label class="tag-check"><input type="checkbox" id="pdf-medications" checked> Medicamentos cadastrados</label>
+                <label class="tag-check"><input type="checkbox" id="pdf-doses" checked> Doses administradas</label>
+                <label class="tag-check"><input type="checkbox" id="pdf-logs" checked> Histórico de atividades</label>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>Título complementar</label><input id="report-title" type="text" placeholder="Ex: Semana 01 a 07 de abril"></div>
+            </div>
+            <button class="btn btn-primary" onclick="generatePdfReport()">⬇️ Gerar PDF</button>
+          </div>
+          <div class="card">
+            <div class="card-title">🧭 O que entra no relatório</div>
+            <div class="small" style="line-height:1.7;">
+              <p><strong>Semanal:</strong> usa a data escolhida para localizar a semana inteira.</p>
+              <p><strong>Mensal:</strong> usa o mês selecionado para filtrar atividades, doses e histórico.</p>
+              <p><strong>Classificações:</strong> cada bloco é separado no PDF para facilitar leitura e arquivo.</p>
+              <p><strong>Recomendação:</strong> gere um PDF semanal para acompanhamento da cuidadora e um mensal para arquivamento familiar.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="footer-space"></div>
+    </div>
+  </div>
+
+  <div id="patient-modal-wrap" class="modal-backdrop">
+    <div class="modal">
+      <div class="row space" style="margin-bottom:16px;">
+        <h3 style="font-family:'Lora',serif;color:var(--verde);">Dados do paciente</h3>
+        <button class="btn btn-secondary btn-sm" onclick="closePatientModal()">Fechar</button>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Nome completo</label><input id="patient-name" type="text"></div>
+        <div class="field" style="max-width:130px;"><label>Idade</label><input id="patient-age" type="number" min="0"></div>
+        <div class="field" style="max-width:130px;"><label>Peso (kg)</label><input id="patient-weight" type="number" step="0.1" min="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Condições de saúde</label><textarea id="patient-conditions"></textarea></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Cuidador principal</label><input id="patient-caregiver" type="text"></div>
+      </div>
+      <button class="btn btn-primary" onclick="savePatient()">💾 Salvar paciente</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <script>
+    const DEFAULT_SUPABASE_URL = 'https://pzueuxjkkehtcwderblt.supabase.co';
+    const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6dWV1eGpra2VodGN3ZGVyYmx0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1ODE1OTYsImV4cCI6MjA2NTE1NzU5Nn0.1Z9zRMo7H0mXAV0zci2D44cWGqnJbnyhjrvBSncFzRU';
+
+    let supabase = null;
+    let authMode = 'login';
+    let currentUser = null;
+    let currentProfile = null;
+    let currentGroup = null;
+    let patient = null;
+    let tasks = [];
+    let medications = [];
+    let logs = [];
+    let doses = [];
+
+    const categoryLabels = {
+      saude: 'Saúde',
+      higiene: 'Higiene',
+      alimentacao: 'Alimentação',
+      exercicio: 'Exercício',
+      consulta: 'Consulta/Exame',
+      outro: 'Outro'
+    };
+
+    function config() {
+      return {
+        url: localStorage.getItem('cb2_supabase_url') || DEFAULT_SUPABASE_URL,
+        key: localStorage.getItem('cb2_supabase_key') || DEFAULT_SUPABASE_ANON_KEY
+      };
+    }
+
+    function initClient() {
+      const cfg = config();
+      document.getElementById('cfg-url').value = cfg.url;
+      document.getElementById('cfg-key').value = cfg.key;
+      supabase = window.supabase.createClient(cfg.url, cfg.key);
+    }
+
+    function saveConfig() {
+      localStorage.setItem('cb2_supabase_url', document.getElementById('cfg-url').value.trim());
+      localStorage.setItem('cb2_supabase_key', document.getElementById('cfg-key').value.trim());
+      initClient();
+      notifyAuth('Configuração salva. Agora você pode entrar ou cadastrar.', 'success');
+    }
+
+    function loadDefaultConfig() {
+      localStorage.setItem('cb2_supabase_url', DEFAULT_SUPABASE_URL);
+      localStorage.setItem('cb2_supabase_key', DEFAULT_SUPABASE_ANON_KEY);
+      initClient();
+      notifyAuth('Configuração padrão restaurada.', 'success');
+    }
+
+    function switchAuthMode(mode) {
+      authMode = mode;
+      document.getElementById('auth-mode-login').classList.toggle('active', mode === 'login');
+      document.getElementById('auth-mode-register').classList.toggle('active', mode === 'register');
+      document.getElementById('register-extra').classList.toggle('hidden', mode !== 'register');
+      document.getElementById('auth-submit-btn').innerHTML = mode === 'login' ? '🔐 Entrar' : '🆕 Criar conta';
+      toggleGroupFields();
+      notifyAuth('', 'clear');
+    }
+
+    function toggleGroupFields() {
+      const mode = document.getElementById('auth-group-mode')?.value || 'create';
+      document.getElementById('field-group-name')?.classList.toggle('hidden', mode !== 'create');
+      document.getElementById('field-group-code')?.classList.toggle('hidden', mode !== 'join');
+    }
+
+    function notify(containerId, msg, type = 'notice') {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      if (!msg) { el.innerHTML = ''; return; }
+      const cls = type === 'error' ? 'alert' : type === 'success' ? 'success' : 'notice';
+      el.innerHTML = `<div class="${cls}">${msg}</div>`;
+    }
+    const notifyAuth = (msg, type) => notify('auth-feedback', msg, type);
+    const notifyApp = (msg, type) => notify('app-feedback', msg, type);
+
+    function nowBrDate() {
+      return new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+    }
+    function tickClock() {
+      const d = new Date();
+      const t = d.toLocaleTimeString('pt-BR');
+      document.getElementById('clock').textContent = t;
+      document.getElementById('today-date').textContent = nowBrDate();
+    }
+    setInterval(tickClock, 1000);
+    tickClock();
+
+    function todayIsoDate() {
+      const d = new Date();
+      return d.toISOString().slice(0, 10);
+    }
+
+    function formatDateTime(value) {
+      return value ? new Date(value).toLocaleString('pt-BR') : '—';
+    }
+
+    function uuidCode() {
+      return Math.random().toString(36).slice(2, 8).toUpperCase();
+    }
+
+    async function handleAuth() {
+      if (!supabase) initClient();
+      const email = document.getElementById('auth-email').value.trim();
+      const password = document.getElementById('auth-password').value.trim();
+
+      if (!email || !password) {
+        notifyAuth('Informe e-mail e senha.', 'error');
+        return;
+      }
+
+      if (authMode === 'login') {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) return notifyAuth(`Erro ao entrar: ${error.message}`, 'error');
+        notifyAuth('Login realizado com sucesso.', 'success');
+        await bootstrapSession();
+        return;
+      }
+
+      const displayName = document.getElementById('auth-name').value.trim();
+      const role = document.getElementById('auth-role').value;
+      const groupMode = document.getElementById('auth-group-mode').value;
+      const groupName = document.getElementById('auth-group-name').value.trim();
+      const groupCode = document.getElementById('auth-group-code').value.trim().toUpperCase();
+
+      if (!displayName) return notifyAuth('Informe o nome de exibição.', 'error');
+      if (groupMode === 'create' && !groupName) return notifyAuth('Informe o nome do grupo.', 'error');
+      if (groupMode === 'join' && !groupCode) return notifyAuth('Informe o código do grupo.', 'error');
+
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) return notifyAuth(`Erro ao cadastrar: ${error.message}`, 'error');
+      const userId = data.user?.id;
+      if (!userId) {
+        notifyAuth('Conta criada. Confirme seu e-mail no Supabase, se essa opção estiver ativa, e entre em seguida.', 'notice');
+        return;
+      }
+
+      let targetGroup = null;
+      if (groupMode === 'join') {
+        const { data: existingGroup, error: groupError } = await supabase
+          .from('care_groups')
+          .select('*')
+          .eq('invite_code', groupCode)
+          .single();
+        if (groupError || !existingGroup) {
+          await supabase.auth.signOut();
+          return notifyAuth('Código de grupo não encontrado. Verifique e tente novamente.', 'error');
+        }
+        targetGroup = existingGroup;
+      } else {
+        const payload = { name: groupName, invite_code: uuidCode(), owner_user_id: userId };
+        const { data: createdGroup, error: createGroupError } = await supabase.from('care_groups').insert([payload]).select().single();
+        if (createGroupError) return notifyAuth(`Erro ao criar grupo: ${createGroupError.message}`, 'error');
+        targetGroup = createdGroup;
+      }
+
+      const { error: profileError } = await supabase.from('profiles').upsert([{
+        user_id: userId,
+        display_name: displayName,
+        role,
+        email
+      }], { onConflict: 'user_id' });
+      if (profileError) return notifyAuth(`Conta criada, mas falhou ao criar perfil: ${profileError.message}`, 'error');
+
+      const { error: memberError } = await supabase.from('care_group_members').upsert([{
+        care_group_id: targetGroup.id,
+        user_id: userId,
+        role
+      }], { onConflict: 'care_group_id,user_id' });
+      if (memberError) return notifyAuth(`Conta criada, mas falhou ao vincular ao grupo: ${memberError.message}`, 'error');
+
+      notifyAuth('Cadastro concluído com sucesso. Entrando no sistema...', 'success');
+      await bootstrapSession();
+    }
+
+    async function signOut() {
+      if (!supabase) initClient();
+      await supabase.auth.signOut();
+      currentUser = null; currentProfile = null; currentGroup = null; patient = null;
+      tasks = []; medications = []; logs = []; doses = [];
+      document.getElementById('app-screen').classList.add('hidden');
+      document.getElementById('auth-screen').classList.remove('hidden');
+      notifyAuth('Sessão encerrada.', 'notice');
+    }
+
+    async function bootstrapSession() {
+      if (!supabase) initClient();
+      const { data: authData } = await supabase.auth.getSession();
+      const session = authData.session;
+      if (!session?.user) {
+        document.getElementById('app-screen').classList.add('hidden');
+        document.getElementById('auth-screen').classList.remove('hidden');
+        return;
+      }
+      currentUser = session.user;
+      await ensureUserContext();
+      if (!currentGroup) {
+        document.getElementById('app-screen').classList.add('hidden');
+        document.getElementById('auth-screen').classList.remove('hidden');
+        return notifyAuth('Seu usuário ainda não está vinculado a um grupo. Cadastre novamente e escolha criar ou entrar em um grupo.', 'error');
+      }
+      document.getElementById('user-label').textContent = currentProfile?.display_name || currentUser.email;
+      document.getElementById('group-name').textContent = currentGroup.name;
+      document.getElementById('group-code').textContent = currentGroup.invite_code;
+      document.getElementById('group-code-2').textContent = currentGroup.invite_code;
+      document.getElementById('auth-screen').classList.add('hidden');
+      document.getElementById('app-screen').classList.remove('hidden');
+      await loadAppData();
+    }
+
+    async function ensureUserContext() {
+      const [{ data: profile }, { data: membership }] = await Promise.all([
+        supabase.from('profiles').select('*').eq('user_id', currentUser.id).maybeSingle(),
+        supabase.from('care_group_members').select('care_group_id, role, care_groups(*)').eq('user_id', currentUser.id).limit(1).maybeSingle()
+      ]);
+      currentProfile = profile || { display_name: currentUser.email, email: currentUser.email, role: 'other' };
+      currentGroup = membership?.care_groups || null;
+    }
+
+    async function loadAppData() {
+      if (!currentGroup) return;
+      notifyApp('Carregando dados do grupo...', 'notice');
+      const { data: patientData } = await supabase.from('patients').select('*').eq('care_group_id', currentGroup.id).order('created_at', { ascending: true }).limit(1).maybeSingle();
+      patient = patientData || null;
+
+      if (patient) {
+        const [{ data: taskData }, { data: medData }, { data: logData }, { data: doseData }] = await Promise.all([
+          supabase.from('tasks').select('*').eq('care_group_id', currentGroup.id).eq('patient_id', patient.id).order('task_time', { ascending: true, nullsFirst: false }).order('created_at', { ascending: false }),
+          supabase.from('medications').select('*').eq('care_group_id', currentGroup.id).eq('patient_id', patient.id).order('created_at', { ascending: false }),
+          supabase.from('activity_logs').select('*').eq('care_group_id', currentGroup.id).eq('patient_id', patient.id).order('created_at', { ascending: false }).limit(300),
+          supabase.from('dose_logs').select('*').eq('care_group_id', currentGroup.id).eq('patient_id', patient.id).order('administered_at', { ascending: false }).limit(300)
+        ]);
+        tasks = taskData || [];
+        medications = medData || [];
+        logs = logData || [];
+        doses = doseData || [];
+      } else {
+        tasks = []; medications = []; logs = []; doses = [];
+      }
+      renderAll();
+      notifyApp('', 'clear');
+    }
+
+    function renderAll() {
+      renderHero();
+      renderTasks();
+      renderMeds();
+      renderHistory();
+      renderSummary();
+      setDefaultReportDates();
+    }
+
+    function renderHero() {
+      document.getElementById('hero-patient-name').textContent = patient?.full_name || 'Paciente não configurado';
+      document.getElementById('hero-patient-meta').textContent = patient
+        ? `${patient.age || '—'} anos • ${patient.conditions || 'Sem condições registradas'} • Cuidador principal: ${patient.primary_caregiver || '—'}`
+        : 'Cadastre os dados do paciente para iniciar o acompanhamento.';
+    }
+
+    function showSection(id, btn) {
+      document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(`section-${id}`).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function openPatientModal() {
+      document.getElementById('patient-name').value = patient?.full_name || '';
+      document.getElementById('patient-age').value = patient?.age || '';
+      document.getElementById('patient-weight').value = patient?.weight || '';
+      document.getElementById('patient-conditions').value = patient?.conditions || '';
+      document.getElementById('patient-caregiver').value = patient?.primary_caregiver || '';
+      document.getElementById('patient-modal-wrap').style.display = 'flex';
+    }
+    function closePatientModal() { document.getElementById('patient-modal-wrap').style.display = 'none'; }
+
+    async function savePatient() {
+      if (!currentGroup) return;
+      const payload = {
+        care_group_id: currentGroup.id,
+        full_name: document.getElementById('patient-name').value.trim(),
+        age: Number(document.getElementById('patient-age').value || 0) || null,
+        weight: Number(document.getElementById('patient-weight').value || 0) || null,
+        conditions: document.getElementById('patient-conditions').value.trim(),
+        primary_caregiver: document.getElementById('patient-caregiver').value.trim(),
+        updated_by: currentUser.id
+      };
+      if (!payload.full_name) return notifyApp('Informe o nome do paciente.', 'error');
+
+      let error = null;
+      if (patient?.id) {
+        ({ error } = await supabase.from('patients').update(payload).eq('id', patient.id));
+      } else {
+        ({ error } = await supabase.from('patients').insert([payload]));
+      }
+      if (error) return notifyApp(`Erro ao salvar paciente: ${error.message}`, 'error');
+      await addLog('system', `Dados do paciente atualizados por ${currentProfile?.display_name || currentUser.email}.`);
+      closePatientModal();
+      await loadAppData();
+      notifyApp('Paciente salvo com sucesso.', 'success');
+    }
+
+    async function createTask() {
+      if (!patient) return notifyApp('Cadastre primeiro o paciente.', 'error');
+      const payload = {
+        care_group_id: currentGroup.id,
+        patient_id: patient.id,
+        description: document.getElementById('task-desc').value.trim(),
+        task_time: document.getElementById('task-time').value || null,
+        category: document.getElementById('task-category').value,
+        priority: document.getElementById('task-priority').value,
+        responsible: document.getElementById('task-responsible').value.trim(),
+        notes: document.getElementById('task-notes').value.trim(),
+        is_done: false,
+        created_by: currentUser.id
+      };
+      if (!payload.description) return notifyApp('Informe a descrição da tarefa.', 'error');
+      const { error } = await supabase.from('tasks').insert([payload]);
+      if (error) return notifyApp(`Erro ao salvar tarefa: ${error.message}`, 'error');
+      await addLog('task', `Tarefa cadastrada: ${payload.description}${payload.task_time ? ` às ${payload.task_time}` : ''}.`);
+      ['task-desc','task-time','task-responsible','task-notes'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('task-priority').value = 'normal';
+      await loadAppData();
+      notifyApp('Tarefa cadastrada.', 'success');
+    }
+
+    async function toggleTask(id, nextState) {
+      const { error } = await supabase.from('tasks').update({ is_done: nextState, updated_by: currentUser.id }).eq('id', id);
+      if (error) return notifyApp(`Erro ao atualizar tarefa: ${error.message}`, 'error');
+      const task = tasks.find(t => t.id === id);
+      await addLog('task', `${nextState ? 'Tarefa concluída' : 'Tarefa reaberta'}: ${task?.description || 'registro'}.`);
+      await loadAppData();
+    }
+
+    async function deleteTask(id) {
+      const task = tasks.find(t => t.id === id);
+      const { error } = await supabase.from('tasks').delete().eq('id', id);
+      if (error) return notifyApp(`Erro ao excluir tarefa: ${error.message}`, 'error');
+      await addLog('task', `Tarefa removida: ${task?.description || 'registro'}.`);
+      await loadAppData();
+    }
+
+    function renderTasks() {
+      const el = document.getElementById('task-list');
+      if (!tasks.length) {
+        el.innerHTML = `<div class="empty"><div class="emoji">📋</div><div>Nenhuma tarefa cadastrada ainda.</div></div>`;
+        return;
+      }
+      const sorted = [...tasks].sort((a,b) => (a.task_time || '99:99').localeCompare(b.task_time || '99:99'));
+      el.innerHTML = sorted.map(t => `
+        <div class="item ${t.is_done ? 'done' : ''} ${t.priority === 'urgente' ? 'urgent' : ''}">
+          <div class="check" onclick="toggleTask('${t.id}', ${!t.is_done})">${t.is_done ? '✓' : ''}</div>
+          <div class="item-content">
+            <div class="item-title">${escapeHtml(t.description)}</div>
+            <div class="item-meta">
+              ${t.task_time ? `<span class="pill blue">⏰ ${escapeHtml(t.task_time)}</span>` : ''}
+              <span class="pill">${escapeHtml(categoryLabels[t.category] || t.category || 'Outro')}</span>
+              ${t.priority === 'urgente' ? `<span class="pill orange">Urgente</span>` : ''}
+              ${t.responsible ? `<span class="pill gray">👤 ${escapeHtml(t.responsible)}</span>` : ''}
+            </div>
+            ${t.notes ? `<div class="small muted">📝 ${escapeHtml(t.notes)}</div>` : ''}
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="deleteTask('${t.id}')">Excluir</button>
+        </div>
+      `).join('');
+    }
+
+    async function createMedication() {
+      if (!patient) return notifyApp('Cadastre primeiro o paciente.', 'error');
+      const name = document.getElementById('med-name').value.trim();
+      if (!name) return notifyApp('Informe o nome do medicamento.', 'error');
+      const schedule_times = document.getElementById('med-times').value.split(',').map(v => v.trim()).filter(Boolean);
+      const payload = {
+        care_group_id: currentGroup.id,
+        patient_id: patient.id,
+        name,
+        dosage: document.getElementById('med-dose').value.trim(),
+        route: document.getElementById('med-route').value,
+        condition_label: document.getElementById('med-condition').value.trim(),
+        schedule_times,
+        notes: document.getElementById('med-notes').value.trim(),
+        created_by: currentUser.id
+      };
+      const { error } = await supabase.from('medications').insert([payload]);
+      if (error) return notifyApp(`Erro ao salvar medicamento: ${error.message}`, 'error');
+      await addLog('medication', `Medicamento cadastrado: ${name}.`);
+      ['med-name','med-dose','med-condition','med-times','med-notes'].forEach(id => document.getElementById(id).value = '');
+      await loadAppData();
+      notifyApp('Medicamento cadastrado.', 'success');
+    }
+
+    function wasDoseTakenToday(medId, time) {
+      return doses.some(d => d.medication_id === medId && d.scheduled_time === time && d.administered_at?.slice(0,10) === todayIsoDate());
+    }
+
+    async function toggleDose(medId, medName, time) {
+      const existing = doses.find(d => d.medication_id === medId && d.scheduled_time === time && d.administered_at?.slice(0,10) === todayIsoDate());
+      if (existing) {
+        const { error } = await supabase.from('dose_logs').delete().eq('id', existing.id);
+        if (error) return notifyApp(`Erro ao remover dose: ${error.message}`, 'error');
+        await addLog('dose', `Dose desmarcada: ${medName} às ${time}.`);
+      } else {
+        const { error } = await supabase.from('dose_logs').insert([{
+          care_group_id: currentGroup.id,
+          patient_id: patient.id,
+          medication_id: medId,
+          medication_name: medName,
+          scheduled_time: time,
+          administered_at: new Date().toISOString(),
+          recorded_by: currentUser.id
+        }]);
+        if (error) return notifyApp(`Erro ao registrar dose: ${error.message}`, 'error');
+        await addLog('dose', `Dose administrada: ${medName} às ${time}.`);
+      }
+      await loadAppData();
+    }
+
+    async function deleteMedication(id) {
+      const med = medications.find(m => m.id === id);
+      const { error } = await supabase.from('medications').delete().eq('id', id);
+      if (error) return notifyApp(`Erro ao excluir medicamento: ${error.message}`, 'error');
+      await addLog('medication', `Medicamento removido: ${med?.name || 'registro'}.`);
+      await loadAppData();
+    }
+
+    function renderMeds() {
+      const el = document.getElementById('med-list');
+      if (!medications.length) {
+        el.innerHTML = `<div class="empty"><div class="emoji">💊</div><div>Nenhum medicamento cadastrado ainda.</div></div>`;
+        return;
+      }
+      el.innerHTML = medications.map((m, idx) => `
+        <div class="med-card">
+          <div class="med-icon">${['💊','💉','🩺','🌡️','💧'][idx % 5]}</div>
+          <div style="flex:1;">
+            <div style="font-weight:700; margin-bottom:4px;">${escapeHtml(m.name)}</div>
+            <div class="small muted">${escapeHtml(m.dosage || 'Dose não informada')} • ${escapeHtml(m.route || 'Via não informada')} ${m.condition_label ? `• ${escapeHtml(m.condition_label)}` : ''}</div>
+            ${m.notes ? `<div class="small muted" style="margin-top:6px;">📝 ${escapeHtml(m.notes)}</div>` : ''}
+            <div class="dose-wrap">
+              ${(m.schedule_times || []).map(time => {
+                const taken = wasDoseTakenToday(m.id, time);
+                return `<button class="dose-pill ${taken ? 'taken' : ''}" onclick="toggleDose('${m.id}', '${escapeJs(m.name)}', '${escapeJs(time)}')">${taken ? '✓' : '🕐'} ${escapeHtml(time)}</button>`;
+              }).join('') || '<span class="pill gray">Sem horários definidos</span>'}
+            </div>
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="deleteMedication('${m.id}')">Excluir</button>
+        </div>
+      `).join('');
+    }
+
+    async function addLog(type, message) {
+      if (!patient) return;
+      await supabase.from('activity_logs').insert([{
+        care_group_id: currentGroup.id,
+        patient_id: patient.id,
+        log_type: type,
+        message,
+        created_by: currentUser.id
+      }]);
+    }
+
+    async function clearLogs() {
+      if (!patient) return notifyApp('Não há histórico para limpar.', 'error');
+      const { error } = await supabase.from('activity_logs').delete().eq('care_group_id', currentGroup.id).eq('patient_id', patient.id);
+      if (error) return notifyApp(`Erro ao limpar histórico: ${error.message}`, 'error');
+      await loadAppData();
+      notifyApp('Histórico limpo.', 'success');
+    }
+
+    function renderHistory() {
+      const el = document.getElementById('history-list');
+      const lastEl = document.getElementById('last-logs');
+      if (!logs.length) {
+        const empty = `<div class="empty"><div class="emoji">📜</div><div>Nenhum registro ainda.</div></div>`;
+        el.innerHTML = empty;
+        lastEl.innerHTML = empty;
+        return;
+      }
+      const html = logs.map(l => `
+        <div class="log-item">
+          <div class="log-dot ${l.log_type === 'medication' || l.log_type === 'dose' ? 'med' : l.log_type === 'system' ? 'sys' : ''}"></div>
+          <div style="flex:1;">
+            <div><strong>${escapeHtml(logTypeLabel(l.log_type))}</strong> • ${escapeHtml(l.message)}</div>
+            <div class="tiny muted" style="margin-top:4px;">${formatDateTime(l.created_at)}</div>
+          </div>
+        </div>
+      `).join('');
+      el.innerHTML = html;
+      lastEl.innerHTML = logs.slice(0,5).map(l => `
+        <div class="log-item">
+          <div class="log-dot ${l.log_type === 'medication' || l.log_type === 'dose' ? 'med' : l.log_type === 'system' ? 'sys' : ''}"></div>
+          <div style="flex:1;">
+            <div>${escapeHtml(l.message)}</div>
+            <div class="tiny muted" style="margin-top:4px;">${formatDateTime(l.created_at)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderSummary() {
+      const tasksDone = tasks.filter(t => t.is_done).length;
+      const tasksPending = tasks.filter(t => !t.is_done).length;
+      const dosesDone = doses.filter(d => d.administered_at?.slice(0,10) === todayIsoDate()).length;
+      const scheduledToday = medications.reduce((acc, med) => acc + (med.schedule_times?.length || 0), 0);
+      const dosesPending = Math.max(scheduledToday - dosesDone, 0);
+
+      document.getElementById('stat-tasks-done').textContent = tasksDone;
+      document.getElementById('stat-tasks-pending').textContent = tasksPending;
+      document.getElementById('stat-doses-done').textContent = dosesDone;
+      document.getElementById('stat-doses-pending').textContent = dosesPending;
+
+      const nextActionsEl = document.getElementById('next-actions');
+      const upcomingTasks = tasks.filter(t => !t.is_done).sort((a,b) => (a.task_time || '99:99').localeCompare(b.task_time || '99:99')).slice(0, 6);
+      const upcomingDoses = medications.flatMap(m => (m.schedule_times || []).filter(time => !wasDoseTakenToday(m.id, time)).map(time => ({ type: 'dose', time, name: m.name })));
+      const merged = [
+        ...upcomingTasks.map(t => ({ type: 'task', time: t.task_time || 'Sem hora', title: t.description, extra: categoryLabels[t.category] || 'Tarefa' })),
+        ...upcomingDoses.map(d => ({ type: 'dose', time: d.time, title: d.name, extra: 'Dose pendente' }))
+      ].sort((a,b) => (a.time || '99:99').localeCompare(b.time || '99:99')).slice(0, 8);
+
+      if (!merged.length) {
+        nextActionsEl.innerHTML = `<div class="empty"><div class="emoji">☀️</div><div>Nenhuma ação pendente no momento.</div></div>`;
+      } else {
+        nextActionsEl.innerHTML = merged.map(item => `
+          <div class="item">
+            <div class="pill blue">${item.type === 'task' ? '✅' : '💊'} ${escapeHtml(item.time || '—')}</div>
+            <div class="item-content">
+              <div class="item-title">${escapeHtml(item.title)}</div>
+              <div class="small muted">${escapeHtml(item.extra)}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function logTypeLabel(type) {
+      return ({ task: 'Tarefa', medication: 'Medicamento', dose: 'Dose', system: 'Sistema' })[type] || 'Registro';
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? '').replace(/[&<>"]+/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[m] || m));
+    }
+    function escapeJs(str) {
+      return String(str ?? '').replace(/['\\]/g, '\\$&');
+    }
+
+    function toggleReportFields() {
+      const type = document.getElementById('report-period').value;
+      document.getElementById('report-week-field').classList.toggle('hidden', type !== 'weekly');
+      document.getElementById('report-month-field').classList.toggle('hidden', type !== 'monthly');
+    }
+
+    function setDefaultReportDates() {
+      const today = new Date();
+      document.getElementById('report-week-date').value = today.toISOString().slice(0,10);
+      document.getElementById('report-month').value = today.toISOString().slice(0,7);
+      toggleReportFields();
+    }
+
+    function getPeriodRange() {
+      const type = document.getElementById('report-period').value;
+      if (type === 'monthly') {
+        const monthValue = document.getElementById('report-month').value;
+        if (!monthValue) throw new Error('Selecione o mês de referência.');
+        const [y, m] = monthValue.split('-').map(Number);
+        const start = new Date(y, m - 1, 1);
+        const end = new Date(y, m, 1);
+        return { type, start, end, label: `${start.toLocaleDateString('pt-BR', { month:'long', year:'numeric' })}` };
+      }
+      const refValue = document.getElementById('report-week-date').value;
+      if (!refValue) throw new Error('Selecione a data de referência da semana.');
+      const ref = new Date(refValue + 'T12:00:00');
+      const day = ref.getDay();
+      const diffToMonday = day === 0 ? -6 : 1 - day;
+      const start = new Date(ref);
+      start.setDate(ref.getDate() + diffToMonday);
+      start.setHours(0,0,0,0);
+      const end = new Date(start);
+      end.setDate(start.getDate() + 7);
+      return { type, start, end, label: `${start.toLocaleDateString('pt-BR')} a ${new Date(end.getTime()-1).toLocaleDateString('pt-BR')}` };
+    }
+
+    function inRange(value, start, end, fieldType = 'datetime') {
+      if (!value) return false;
+      const dt = fieldType === 'date' ? new Date(value + 'T00:00:00') : new Date(value);
+      return dt >= start && dt < end;
+    }
+
+    function generatePdfReport() {
+      try {
+        if (!patient) return notifyApp('Cadastre primeiro o paciente antes de gerar o PDF.', 'error');
+        const range = getPeriodRange();
+        const includePatient = document.getElementById('pdf-patient').checked;
+        const includeTasks = document.getElementById('pdf-tasks').checked;
+        const includeMeds = document.getElementById('pdf-medications').checked;
+        const includeDoses = document.getElementById('pdf-doses').checked;
+        const includeLogs = document.getElementById('pdf-logs').checked;
+        if (![includePatient, includeTasks, includeMeds, includeDoses, includeLogs].some(Boolean)) {
+          return notifyApp('Selecione ao menos uma classificação para o PDF.', 'error');
+        }
+
+        const filteredTasks = tasks.filter(t => inRange(t.created_at, range.start, range.end));
+        const filteredLogs = logs.filter(l => inRange(l.created_at, range.start, range.end));
+        const filteredDoses = doses.filter(d => inRange(d.administered_at, range.start, range.end));
+        const filteredMeds = includeMeds ? medications : [];
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+        const pageWidth = doc.internal.pageSize.getWidth();
+        let y = 42;
+
+        doc.setFillColor(45, 106, 79);
+        doc.roundedRect(32, 26, pageWidth - 64, 74, 14, 14, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(20);
+        doc.setTextColor(255,255,255);
+        doc.text('CuidarBem Pro – Relatório de Cuidados', 48, 54);
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Paciente: ${patient.full_name}`, 48, 74);
+        doc.text(`Período: ${range.type === 'weekly' ? 'Semanal' : 'Mensal'} • ${range.label}`, 48, 90);
+
+        y = 122;
+        const titleComplement = document.getElementById('report-title').value.trim();
+        if (titleComplement) {
+          doc.setTextColor(37, 51, 38);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(12);
+          doc.text(titleComplement, 32, y);
+          y += 18;
+        }
+
+        const addSectionTitle = (title) => {
+          if (y > 740) { doc.addPage(); y = 42; }
+          doc.setTextColor(45,106,79);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(14);
+          doc.text(title, 32, y);
+          y += 12;
+        };
+
+        const addTextBlock = (lines) => {
+          doc.setTextColor(37,51,38);
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(10.5);
+          lines.forEach(line => {
+            if (y > 760) { doc.addPage(); y = 42; }
+            doc.text(line, 40, y + 12);
+            y += 16;
+          });
+          y += 8;
+        };
+
+        const addTable = (head, body) => {
+          doc.autoTable({
+            startY: y,
+            head: [head],
+            body,
+            styles: { fontSize: 9, cellPadding: 5, textColor: [37,51,38] },
+            headStyles: { fillColor: [45,106,79] },
+            margin: { left: 32, right: 32 },
+            theme: 'grid'
+          });
+          y = doc.lastAutoTable.finalY + 16;
+        };
+
+        if (includePatient) {
+          addSectionTitle('1. Dados do paciente');
+          addTextBlock([
+            `Nome: ${patient.full_name || '—'}`,
+            `Idade: ${patient.age || '—'} anos`,
+            `Peso: ${patient.weight || '—'} kg`,
+            `Condições: ${patient.conditions || '—'}`,
+            `Cuidador principal: ${patient.primary_caregiver || '—'}`,
+            `Grupo de acompanhamento: ${currentGroup?.name || '—'} (${currentGroup?.invite_code || '—'})`
+          ]);
+        }
+
+        if (includeTasks) {
+          addSectionTitle('2. Tarefas');
+          if (!filteredTasks.length) {
+            addTextBlock(['Nenhuma tarefa criada neste período.']);
+          } else {
+            const body = filteredTasks.map(t => [
+              t.task_time || '—',
+              t.description,
+              categoryLabels[t.category] || t.category || 'Outro',
+              t.priority || 'normal',
+              t.is_done ? 'Concluída' : 'Pendente',
+              t.responsible || '—'
+            ]);
+            addTable(['Hora', 'Descrição', 'Classificação', 'Prioridade', 'Status', 'Responsável'], body);
+          }
+        }
+
+        if (includeMeds) {
+          addSectionTitle('3. Medicamentos cadastrados');
+          if (!filteredMeds.length) {
+            addTextBlock(['Nenhum medicamento cadastrado.']);
+          } else {
+            const body = filteredMeds.map(m => [
+              m.name,
+              m.dosage || '—',
+              m.route || '—',
+              m.condition_label || '—',
+              (m.schedule_times || []).join(', ') || '—'
+            ]);
+            addTable(['Medicamento', 'Dose', 'Via', 'Classificação/uso', 'Horários'], body);
+          }
+        }
+
+        if (includeDoses) {
+          addSectionTitle('4. Doses administradas');
+          if (!filteredDoses.length) {
+            addTextBlock(['Nenhuma dose registrada no período.']);
+          } else {
+            const grouped = filteredDoses.sort((a,b) => new Date(a.administered_at) - new Date(b.administered_at));
+            const body = grouped.map(d => [
+              d.medication_name || '—',
+              d.scheduled_time || '—',
+              new Date(d.administered_at).toLocaleDateString('pt-BR'),
+              new Date(d.administered_at).toLocaleTimeString('pt-BR')
+            ]);
+            addTable(['Medicamento', 'Horário previsto', 'Data', 'Hora do registro'], body);
+          }
+        }
+
+        if (includeLogs) {
+          addSectionTitle('5. Histórico de atividades');
+          if (!filteredLogs.length) {
+            addTextBlock(['Nenhum registro de atividade no período.']);
+          } else {
+            const body = filteredLogs.map(l => [
+              logTypeLabel(l.log_type),
+              new Date(l.created_at).toLocaleDateString('pt-BR'),
+              new Date(l.created_at).toLocaleTimeString('pt-BR'),
+              l.message
+            ]);
+            addTable(['Classificação', 'Data', 'Hora', 'Descrição'], body);
+          }
+        }
+
+        const safePatient = (patient.full_name || 'paciente').replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+        const safePeriod = range.type === 'weekly' ? 'semanal' : 'mensal';
+        doc.save(`relatorio-${safePatient}-${safePeriod}.pdf`);
+        notifyApp('PDF gerado com sucesso.', 'success');
+      } catch (err) {
+        notifyApp(`Falha ao gerar PDF: ${err.message}`, 'error');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      initClient();
+      switchAuthMode('login');
+      setDefaultReportDates();
+      const { data: authData } = await supabase.auth.getSession();
+      if (authData.session?.user) await bootstrapSession();
+      supabase.auth.onAuthStateChange(async (_event, session) => {
+        if (session?.user) {
+          currentUser = session.user;
+          await bootstrapSession();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
